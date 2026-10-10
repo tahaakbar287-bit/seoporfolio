@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Taha SEO - Web Design & Premium Guest Posts</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  body{font-family:'Space Grotesk', sans-serif; background:#070711; color:white; overflow-x:hidden}
+.glass{background:rgba(255,255,255,0.06); backdrop-filter:blur(20px); border:1px solid rgba(255,255,255,0.1)}
+  #canvas{position:fixed; top:0; left:0; width:100%; height:100%; z-index:-1; pointer-events:none!important;}
+.tilt{transition:all 0.3s ease}.tilt:hover{transform:translateY(-6px) scale(1.02)}
+</style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+
+<!-- NAV -->
+<nav class="fixed top-0 w-full z-40 glass">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+    <h1 class="text-xl font-bold">TAHA<span class="text-violet-400">.SEO</span></h1>
+    <div class="flex gap-3 items-center">
+      <a href="#projects" class="text-sm opacity-70 hover:opacity-100">Projects</a>
+      <a href="#inventory" class="text-sm opacity-70 hover:opacity-100">Sites</a>
+      <button onclick="askPassword()" class="bg-white text-black px-5 py-2 rounded-full text-sm font-bold cursor-pointer hover:bg-violet-200">Admin Login</button>
+      <button onclick="toggleCart()" class="bg-violet-600 px-5 py-2 rounded-full text-sm font-bold cursor-pointer">Cart (<span id="cartCount">0</span>)</button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="min-h-[80vh] flex items-center max-w-7xl mx-auto px-6 pt-28 relative z-10">
+  <div class="w-full grid md:grid-cols-2 gap-10 items-center">
+    <div>
+      <div class="inline-block glass px-4 py-1 rounded-full text-xs mb-4">🔥 50+ Admin Deal Sites Available</div>
+      <h1 class="text-5xl md:text-6xl font-bold leading-tight">I Build Websites That <span class="bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent">Convert & Rank</span></h1>
+      <p class="mt-5 opacity-60 max-w-lg">Web Design + Complete On-Page SEO + Premium Guest Posts. My own admin sites with DR 50-90.</p>
+      <div class="mt-8 flex gap-3">
+        <a href="#inventory" class="bg-white text-black px-7 py-3 rounded-full font-bold text-sm cursor-pointer">View Guest Post Sites</a>
+        <a href="#projects" class="glass px-7 py-3 rounded-full font-bold text-sm cursor-pointer">View Projects</a>
+      </div>
+    </div>
+    <div class="glass rounded-[2rem] p-3 tilt"><img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600" class="rounded-2xl w-full h-[380px] object-cover"></div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects" class="max-w-7xl mx-auto px-6 py-16 relative z-10">
+  <h2 class="text-4xl font-bold">Web Design Projects</h2><p class="opacity-50 mt-2">Click Live Preview to see website</p>
+  <div id="projectGrid" class="grid md:grid-cols-3 gap-6 mt-8"></div>
+</section>
+
+<!-- INVENTORY WITH SEARCH BAR -->
+<section id="inventory" class="max-w-7xl mx-auto px-6 py-16 relative z-10">
+  <h2 class="text-4xl font-bold">Admin Deal Sites Inventory</h2><p class="opacity-50 mt-2">My own sites - Search karo site available hai ya nahi</p>
+  <div class="glass rounded-2xl p-5 mt-8">
+    <div class="relative">
+      <input id="searchNiche" oninput="renderAll()" placeholder="🔍 Search site: tattblog.com, Tech, Business, DR 70..." class="w-full bg-black/70 border border-violet-500/30 rounded-xl px-5 py-4 text-sm outline-none focus:border-violet-500">
+    </div>
+    <div class="grid md:grid-cols-3 gap-3 mt-3">
+      <select id="filterDR" onchange="renderAll()" class="bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-sm"><option value="0">All DR</option><option value="50">DR 50+</option><option value="70">DR 70+</option><option value="80">DR 80+</option></select>
+      <select id="filterPrice" onchange="renderAll()" class="bg-black/50 border border-white/10 rounded-xl px-4 py-3 text-sm"><option value="9999">All Price</option><option value="50">Under $50</option><option value="100">Under $100</option></select>
+      <div class="bg-violet-600/20 border border-violet-500/30 rounded-xl px-4 py-3 text-xs text-center font-bold"><span id="siteCount">0</span> Sites Found</div>
+    </div>
+  </div>
+  <div id="siteGrid" class="grid md:grid-cols-3 gap-6 mt-8"></div>
+</section>
+
+<!-- PASSWORD MODAL -->
+<div id="passModal" class="fixed inset-0 bg-black/90 z-[200] hidden flex items-center justify-center p-6">
+  <div class="glass max-w-sm w-full rounded-2xl p-8 text-center border border-violet-500/30">
+    <h3 class="text-xl font-bold mb-2">Admin Login</h3><p class="text-xs opacity-50 mb-6">Enter password to open admin panel</p>
+    <input id="passInput" type="password" placeholder="Password" class="w-full bg-black border border-white/20 rounded-xl px-4 py-3 text-center outline-none focus:border-violet-500">
+    <p id="passError" class="text-red-400 text-xs mt-3 hidden">❌ Wrong Password!</p>
+    <button onclick="checkPass()" class="w-full bg-violet-600 mt-5 py-3 rounded-xl font-bold cursor-pointer hover:bg-violet-700">Unlock Admin Panel</button>
+    <button onclick="closePass()" class="w-full glass mt-3 py-3 rounded-xl text-sm cursor-pointer">Cancel</button>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div id="adminPanel" class="fixed inset-0 bg-[#070711] z-[150] hidden overflow-y-auto p-6">
+  <div class="max-w-5xl mx-auto">
+    <div class="flex justify-between items-center mb-8">
+      <h2 class="text-3xl font-bold">Admin Panel <span class="text-xs bg-green-500/20 text-green-300 px-3 py-1 rounded-full ml-3">Protected</span></h2>
+      <button onclick="toggleAdmin(false)" class="bg-white text-black px-6 py-2 rounded-full font-bold text-sm cursor-pointer">✕ Close Panel</button>
+    </div>
+    <div class="grid md:grid-cols-2 gap-6">
+      <div class="glass p-6 rounded-2xl">
+        <h3 class="font-bold mb-5 text-violet-400 text-lg">➕ Add Guest Post Site</h3>
+        <input id="a_name" placeholder="Site Name e.g. TATT Blog" class="w-full bg-black border border-white/10 rounded-xl px-4 py-3 text-sm mb-3 outline-none">
+        <input id="a_url" placeholder="URL e.g. tattblog.com" class="w-full bg-black border border-white/10 rounded-xl px-4 py-3 text-sm mb-3 outline-none">
+        <input id="a_niche" placeholder="Niche e.g. Tech / Business" class="w-full bg-black border border-white/10 rounded-xl px-4 py-3 text-sm mb-3 outline-none">
+        <div class="grid grid-cols-3 gap-2 mb-3">
+          <input id="a_dr" placeholder="DR e.g. 70" type="text" class="bg-black border border-white/10 rounded-xl px-3 py-3 text-sm outline-none">
+          <input id="a_traffic" placeholder="Traffic e.g. 1.5k" type="text" class="bg-black border border-white/10 rounded-xl px-3 py-3 text-sm outline-none">
+          <input id="a_price" placeholder="Price e.g. 50" type="text" class="bg-black border border-white/10 rounded-xl px-3 py-3 text-sm outline-none">
+        </div>
+        <textarea id="a_guide" placeholder="Guidelines..." class="w-full bg-black border border-white/10 rounded-xl px-4 py-3 h-24 text-sm mb-4 outline-none"></textarea>
+        <button onclick="addSite()" class="w-full bg-violet-600 py-3 rounded-xl font-bold cursor-pointer hover:bg-violet-700">+ ADD SITE TO WEBSITE</button>
+      </div>
+      <div class="glass p-6 rounded-2xl">
+        <h3 class="font-bold mb-5 text-cyan-400 text-lg">📁 Add Web Design Project</h3>
+        <input id="p_name" placeholder="Project Name" class="w-full bg-black border border-white/10 rounded-xl px-4 py-3 text-sm mb-3 outline-none">
+        <input id="p_type" placeholder="Type" class="w-full bg-black border border-white/10 rounded-xl px-4 py-3 text-sm mb-3 outline-none">
+        <input id="p_link" placeholder="Live Website Link" class="w-full bg-black border border-violet-500/30 rounded-xl px-4 py-3 text-sm mb-3 outline-none">
+        <input id="p_img" placeholder="Image URL" class="w-full bg-black border border-white/10 rounded-xl px-4 py-3 text-sm mb-4 outline-none">
+        <button onclick="addProject()" class="w-full bg-white text-black py-3 rounded-xl font-bold cursor-pointer">+ ADD PROJECT</button>
+        <div class="mt-8"><h4 class="text-xs opacity-50 mb-3 font-bold">SAVED ITEMS:</h4><div id="adminList" class="space-y-2 max-h-[300px] overflow-y-auto"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CART -->
+<div id="cartModal" class="fixed inset-0 bg-black/80 z-[90] hidden flex justify-end">
+  <div class="w-full max-w-md bg-[#0f0f1a] h-full p-8 overflow-y-auto"><div class="flex justify-between mb-8"><h3 class="text-2xl font-bold">Your Cart</h3><button onclick="toggleCart()" class="cursor-pointer">✕</button></div><div id="cartItems"></div><div class="mt-8"><div class="flex justify-between font-bold text-xl"><span>Total:</span><span id="cartTotal">$0</span></div><a id="waLink" target="_blank" class="block mt-6 bg-green-500 text-center py-4 rounded-full font-bold text-black cursor-pointer">Order on WhatsApp</a></div></div>
+</div>
+
+<!-- GUIDE MODAL -->
+<div id="guideModal" class="fixed inset-0 bg-black/80 z-[90] hidden flex items-center justify-center p-6"><div class="glass max-w-lg w-full rounded-2xl p-8"><div class="flex justify-between mb-4"><h3 id="guideTitle" class="text-xl font-bold"></h3><button onclick="closeGuide()" class="cursor-pointer">✕</button></div><div id="guideBody" class="text-sm opacity-80 leading-relaxed"></div></div></div>
+
+<script>
+// PROTECTED PASSWORD -  is hidden in numbers
+const _0x = [116,97,104,97,64,50,56,55];
+const ADMIN_PASS = String.fromCharCode(..._0x);
+
+let sites=JSON.parse(localStorage.getItem('mySites'))||[{id:1,name:"TATT Blog",url:"tattblog.vercel.app",niche:"Tech/Business",dr:"68",traffic:"12.4k",price:"45",guide:"Do-Follow, 2 Links, 800 Words, TAT 24H, No CBD/Casino"},{id:2,name:"Business Insider Spot",url:"bizinsiderspot.com",niche:"Business",dr:"78",traffic:"45k",price:"90",guide:"Do-Follow, Permanent, 1000 Words"}];
+let projects=JSON.parse(localStorage.getItem('myProjects'))||[{id:101,name:"Roofing Contractor - USA",type:"Contractor",link:"https://example.com",img:"https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=400"}];
+let cart=[];
+function save(){localStorage.setItem('mySites',JSON.stringify(sites)); localStorage.setItem('myProjects',JSON.stringify(projects));}
+
+function renderAll(){
+  const q=document.getElementById('searchNiche').value.toLowerCase();
+  const drF=parseInt(document.getElementById('filterDR').value)||0;
+  const prF=parseInt(document.getElementById('filterPrice').value)||9999;
+  const filtered=sites.filter(s=> (s.name.toLowerCase().includes(q) || s.url.toLowerCase().includes(q) || s.niche.toLowerCase().includes(q)) && (parseInt(s.dr)||0)>=drF && (parseInt(s.price)||0)<=prF);
+  document.getElementById('siteCount').innerText=filtered.length;
+  document.getElementById('siteGrid').innerHTML=filtered.map(s=>`
+    <div class="glass rounded-2xl p-6 tilt"><div class="flex justify-between mb-4"><div><h3 class="font-bold">${s.name}</h3><p class="text-xs opacity-50">${s.url}</p></div><span class="bg-violet-600/20 text-violet-300 text-xs px-3 py-1 rounded-full">DR ${s.dr}</span></div><div class="grid grid-cols-3 gap-2 text-xs mb-5"><div class="bg-white/5 rounded-xl p-3 text-center"><b class="block">${s.traffic}</b><span class="opacity-50">Traffic</span></div><div class="bg-white/5 rounded-xl p-3 text-center"><b class="block text-[11px]">${s.niche}</b><span class="opacity-50">Niche</span></div><div class="bg-white/5 rounded-xl p-3 text-center"><b class="block">$${s.price}</b><span class="opacity-50">Price</span></div></div><div class="flex gap-2"><button onclick="openGuide(${s.id})" class="flex-1 glass py-3 rounded-xl text-xs font-bold cursor-pointer">Guidelines</button><button onclick="addToCart(${s.id})" class="flex-1 bg-white text-black py-3 rounded-xl text-xs font-bold cursor-pointer hover:bg-violet-600 hover:text-white transition">Add to Cart</button></div></div>
+  `).join('') || `<p class="opacity-50 col-span-3 text-center py-10">❌ No sites found for "${q}"</p>`;
+  document.getElementById('projectGrid').innerHTML=projects.map(p=>`
+    <div class="glass rounded-2xl overflow-hidden tilt group"><img src="${p.img}" class="h-48 w-full object-cover"><div class="p-5"><div class="text-xs opacity-50">${p.type}</div><h4 class="font-bold mb-3">${p.name}</h4><a href="${p.link}" target="_blank" class="block w-full text-center bg-white/10 border border-white/10 py-2.5 rounded-xl text-xs font-bold hover:bg-violet-600 transition cursor-pointer">🔗 Live Preview</a></div></div>
+  `).join('');
+  document.getElementById('adminList').innerHTML=sites.map(s=>`<div class="flex justify-between items-center glass p-3 rounded-xl text-xs"><span>🌐 ${s.name} | ${s.traffic} | $${s.price}</span><button onclick="delSite(${s.id})" class="text-red-400 cursor-pointer">Delete</button></div>`).join('')+projects.map(p=>`<div class="flex justify-between items-center glass p-3 rounded-xl text-xs mt-2"><span>📁 ${p.name}</span><button onclick="delProject(${p.id})" class="text-red-400 cursor-pointer">Delete</button></div>`).join('');
+}
+
+function askPassword(){ document.getElementById('passInput').value=''; document.getElementById('passError').classList.add('hidden'); document.getElementById('passModal').classList.remove('hidden'); document.getElementById('passInput').focus(); }
+function closePass(){ document.getElementById('passModal').classList.add('hidden'); }
+function checkPass(){
+  let input = document.getElementById('passInput').value;
+  if(input.split('').map(c=>c.charCodeAt(0)).toString() === _0x.toString()){
+    closePass(); document.getElementById('adminPanel').classList.remove('hidden'); renderAll();
+  }else{ document.getElementById('passError').classList.remove('hidden'); }
+}
+function toggleAdmin(show){ if(show===false){ document.getElementById('adminPanel').classList.add('hidden'); return; } askPassword(); }
+
+function addSite(){
+  const name=document.getElementById('a_name').value.trim(); const url=document.getElementById('a_url').value.trim();
+  if(!name||!url){ alert('❌ Site Name aur URL lazmi hai!'); return; }
+  let s={id:Date.now(), name:name, url:url, niche:document.getElementById('a_niche').value.trim()||'General', dr:document.getElementById('a_dr').value.trim()||'0', traffic:document.getElementById('a_traffic').value.trim()||'0', price:document.getElementById('a_price').value.trim()||'0', guide:document.getElementById('a_guide').value.trim()||'Do-Follow, Permanent'};
+  sites.unshift(s); save(); renderAll(); alert('✅ Site Add Ho Gayi: '+s.name); document.getElementById('a_name').value=''; document.getElementById('a_url').value='';
+}
+function addProject(){
+  const name=document.getElementById('p_name').value.trim(); const link=document.getElementById('p_link').value.trim();
+  if(!name){ alert('❌ Project Name lazmi hai'); return; } if(!link){ alert('❌ Live Link lazmi hai'); return; }
+  let p={id:Date.now(), name:name, type:document.getElementById('p_type').value.trim()||'Business', link:link, img:document.getElementById('p_img').value.trim()||'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=600'};
+  projects.unshift(p); save(); renderAll(); alert('✅ Project Added: '+p.name); document.getElementById('p_name').value=''; document.getElementById('p_link').value='';
+}
+function delSite(id){ if(confirm('Delete this site?')){ sites=sites.filter(s=>s.id!=id); save(); renderAll(); } }
+function delProject(id){ if(confirm('Delete this project?')){ projects=projects.filter(s=>s.id!=id); save(); renderAll(); } }
+
+function addToCart(id){ let s=sites.find(x=>x.id==id); if(!cart.find(c=>c.id==id)){cart.push(s); updateCart(); toggleCart();} }
+function updateCart(){
+  document.getElementById('cartCount').innerText=cart.length;
+  let total=cart.reduce((a,b)=>a+(parseInt(b.price)||0),0);
+  document.getElementById('cartTotal').innerText='$'+total;
+  document.getElementById('cartItems').innerHTML=cart.map(c=>`<div class="flex justify-between glass p-4 rounded-xl mb-3 text-sm"><div><b>${c.name}</b><p class="text-xs opacity-50">DR ${c.dr} | $${c.price}</p></div><button onclick="removeCart(${c.id})" class="cursor-pointer">✕</button></div>`).join('')||'<p class="text-sm opacity-50">Cart empty</p>';
+  let msg=`Hi Taha, I want to order:%0A${cart.map(c=>`- ${c.name} (${c.url}) $${c.price}`).join('%0A')}%0ATotal: $${total}`;
+  // FIXED - TUMHARA WHATSAPP
+  document.getElementById('waLink').href=`https://wa.me/923261957287?text=${msg}`;
+}
+function removeCart(id){ cart=cart.filter(c=>c.id!=id); updateCart(); }
+function toggleCart(){ document.getElementById('cartModal').classList.toggle('hidden'); }
+function openGuide(id){ let s=sites.find(x=>x.id==id); document.getElementById('guideTitle').innerText=s.name+' Guidelines'; document.getElementById('guideBody').innerHTML=`<b>URL:</b> ${s.url}<br><b>DR:</b> ${s.dr} | <b>Traffic:</b> ${s.traffic} | <b>Price:</b> $${s.price}<br><br><b>Guidelines:</b><br>${s.guide}`; document.getElementById('guideModal').classList.remove('hidden'); }
+function closeGuide(){ document.getElementById('guideModal').classList.add('hidden'); }
+
+let scene=new THREE.Scene(); let camera=new THREE.PerspectiveCamera(75,innerWidth/innerHeight,0.1,1000); let renderer=new THREE.WebGLRenderer({canvas:document.getElementById('canvas'), alpha:true}); renderer.setSize(innerWidth, innerHeight); let geo=new THREE.IcosahedronGeometry(1,0); let mat=new THREE.MeshBasicMaterial({color:0x7c3aed, wireframe:true, transparent:true, opacity:0.3}); let meshes=[]; for(let i=0;i<5;i++){ let m=new THREE.Mesh(geo,mat); m.position.set((Math.random()-0.5)*10,(Math.random()-0.5)*10,(Math.random()-2)*3-2); meshes.push(m); scene.add(m);} camera.position.z=5; function animate(){ requestAnimationFrame(animate); meshes.forEach(m=>{m.rotation.x+=0.001; m.rotation.y+=0.001}); renderer.render(scene,camera);} animate();
+window.addEventListener('resize',()=>{ renderer.setSize(innerWidth, innerHeight); camera.aspect=innerWidth/innerHeight; camera.updateProjectionMatrix(); });
+renderAll(); updateCart();
+document.getElementById('passInput').addEventListener('keydown',e=>{ if(e.key==='Enter') checkPass(); });
+</script>
+</body>
+</html>
